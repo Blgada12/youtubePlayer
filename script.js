@@ -5,6 +5,9 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var youtubeId;
 var player;
+var q_box;
+var quals = [];
+var vqual
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
@@ -31,34 +34,28 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerQuality(event) {
-    document.getElementById('info-qual').innerHTML = event.data;
+    vqual = event.data
+    q_box.value = vqual
 }
 
 function onPlayerStateChange(event) {
     switch (event.data) {
         case YT.PlayerState.ENDED:
-            console.log('Video has ended.');
             document.getElementById('info-buff').innerHTML = "";
             break;
         case YT.PlayerState.PLAYING:
-            console.log('Video is playing.');
             document.getElementById('info-buff').innerHTML = "";
             break;
         case YT.PlayerState.PAUSED:
-            console.log('Video is paused.');
             document.getElementById('info-buff').innerHTML = "";
             break;
         case YT.PlayerState.BUFFERING:
-            console.log('Video is buffering.');
             document.getElementById('info-buff').innerHTML = "버퍼링 중";
             break;
         case YT.PlayerState.CUED:
-            console.log('Video is cued.');
             document.getElementById('info-buff').innerHTML = "";
             break;
     }
-    console.log("volume : " + player.getVolume())
-    console.log("current s : " + parseInt(player.getCurrentTime()))
 }
 
 var playerclick = false;
@@ -90,7 +87,6 @@ function onPlayerReady(event) {
     seekslider.value = 50;
     seekslider.addEventListener('mousemove', function () {
         player.setVolume(seekslider.value);
-        console.log("volume : " + seekslider.value)
     });
 
     var mute = document.getElementById("mute");
@@ -104,15 +100,26 @@ function onPlayerReady(event) {
         }
     });
 
+    q_box = document.getElementById("qualbox");
+    q_box.addEventListener('change', function () {
+        if (vqual != q_box.value) {
+            a= q_box.value + ""
+            player.stopVideo()
+            player.seekTo(player.getCurrentTime(), true)
+            player.setPlaybackQuality(a)
+        }
+    });
+
     var seeksliderprog = document.getElementById("seeksliderprog");
     seeksliderprog.value = 0;
     seeksliderprog.max = player.getDuration();
     seeksliderprog.addEventListener('mousemove', function () {
         if (playerclick) {
             player.seekTo(seeksliderprog.value, false)
-            console.log("time : " + seeksliderprog.value)
         }
     });
+
+
     seeksliderprog.addEventListener('mousedown', function () {
         playerclick = true;
     });
@@ -124,9 +131,25 @@ function onPlayerReady(event) {
     setInterval(updatePlayer, 250)
 }
 
+
 function updatePlayer() {
     if (player && player.getDuration) {
         if (!playerclick)
             seeksliderprog.value = player.getCurrentTime();
     }
+
+    if(quals != player.getAvailableQualityLevels()) {
+        if(player.getAvailableQualityLevels().length != 0) {
+            quals = player.getAvailableQualityLevels()
+            put = ""
+            for(i = 0;i<quals.length;i++){
+                put += "<option value=" + quals[i] + ">" + quals[i] + "</option>"
+            }
+            q_box.innerHTML = put
+            q_box.value = vqual
+        }
+
+    }
+
+
 }
