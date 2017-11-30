@@ -15,6 +15,8 @@ var playBtn;
 var cont;
 var playerclick = false;
 var customControl;
+var v_long = 0;
+var volum;
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
@@ -35,7 +37,8 @@ function onYouTubeIframeAPIReady() {
         events: {
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange,
-            'onPlaybackQualityChange': onPlayerQuality
+            'onPlaybackQualityChange': onPlayerQuality,
+            'onApiChange':onCaption
         }
     });
 }
@@ -46,10 +49,7 @@ function onPlayerQuality(event) {
 }
 
 function fullScreen() {
-    player.setSize(screen.width, screen.height-55)
-    cont.style.width = screen.width+"px"
-    cont.style.height = screen.height+"px"
-    customControl.style.width = screen.width-10+"px"
+    isFull = true
     if (cont.requestFullscreen) {
         cont.requestFullscreen();
     } else if (cont.webkitRequestFullscreen) {
@@ -59,13 +59,9 @@ function fullScreen() {
     } else if (cont.msRequestFullscreen) {
         cont.msRequestFullscreen();
     }
-    isFull = true
 }
 function exitFS() {
-    player.setSize(640, 360)
-    customControl.style.width = "630px"
-    cont.style.width = "640px"
-    cont.style.height = "405px"
+    isFull = false
     if (document.exitFullscreen){
         document.exitFullscreen();
     }else if(document.cancelFullScreen) {
@@ -77,40 +73,32 @@ function exitFS() {
     } else if (document.msExitFullscreen) {
         document.msExitFullscreen(); // IE
     }
-    isFull = false
 }
 
 
 function onPlayerStateChange(event) {
     switch (event.data) {
         case YT.PlayerState.ENDED:
-            document.getElementById('info-buff').innerHTML = "끝";
-            playBtn.value = "start"
+            playBtn.src = "./img/play_now.png"
             isPlaying = false;
             break;
         case YT.PlayerState.PLAYING:
-            document.getElementById('info-buff').innerHTML = "";
-            playBtn.value = "pause"
             playBtn.src = "./img/Pause.png"
             isPlaying = true;
             break;
         case YT.PlayerState.PAUSED:
-            document.getElementById('info-buff').innerHTML = "일시정지";
-            playBtn.value = "start"
             playBtn.src = "./img/play_now.png"
             isPlaying = false;
             break;
         case YT.PlayerState.BUFFERING:
-            document.getElementById('info-buff').innerHTML = "버퍼링 중";
             break;
         case YT.PlayerState.CUED:
-            document.getElementById('info-buff').innerHTML = "큐";
             break;
     }
 }
 
 
-
+var cu_show2 = "";
 function onPlayerReady(event) {
     cont = document.getElementById("container")
     player.setVolume(50);
@@ -138,11 +126,12 @@ function onPlayerReady(event) {
     minus15.addEventListener("click", function () {
         player.seekTo(player.getCurrentTime() - 15, true)
     });
-
+    volum = 50;
     var seekslider = document.getElementById("seekslider");
-    seekslider.value = 50;
+    seekslider.value = volum;
     seekslider.addEventListener('mousemove', function () {
-        player.setVolume(seekslider.value);
+        volum = seekslider.value;
+        player.setVolume(volum);
         if(!isMute) {
             if (seekslider.value >= 50)
                 mute.src = "./img/Sound_loud.png"
@@ -157,6 +146,7 @@ function onPlayerReady(event) {
         if (player.isMuted()) {
             player.unMute()
             isMute = false;
+            player.setVolume(volum);
             if (seekslider.value >= 50)
                 mute.src = "./img/Sound_loud.png"
             else
@@ -180,13 +170,12 @@ function onPlayerReady(event) {
 
     var seeksliderprog = document.getElementById("seeksliderprog");
     seeksliderprog.value = 0;
-    seeksliderprog.max = player.getDuration();
+    seeksliderprog.max = player.getDuration()-1;
     seeksliderprog.addEventListener('mousemove', function () {
         if (playerclick) {
             player.seekTo(seeksliderprog.value, false)
         }
     });
-
 
 
     seeksliderprog.addEventListener('mousedown', function () {
@@ -201,13 +190,47 @@ function onPlayerReady(event) {
     fullbtn.addEventListener("click", function () {
         if(isFull) {
             exitFS()
+            player.setSize(640, 360)
+            customControl.style.width = "630px"
+            cont.style.width = "640px"
+            cont.style.height = "415px"
         }
         else{
             fullScreen()
+            player.setSize(screen.width, screen.height-55)
+            cont.style.width = screen.width+"px"
+            cont.style.height = screen.height+"px"
+            customControl.style.width = screen.width-10+"px"
         }
     });
-    setInterval(updatePlayer, 250)
+    setInterval(updatePlayer, 100)
+    if(player.getDuration()%60>=1){
+        v_long = 1
+        if( Math.round(player.getDuration()%60)<10){
+            cu_show2 = "0" + Math.round(player.getDuration() % 60)-1 + ""
+        }
+        else {
+            cu_show2 = Math.round(player.getDuration() % 60)-1 + ""
+        }
+    }
+
+    if(player.getDuration()/60%60>=1){
+        v_long = 2
+        if(Math.round(player.getDuration()/60%60)<10)
+            cu_show2 =  "0"+Math.round(player.getDuration()/60%60)+":"+cu_show2
+        else
+            cu_show2 =  Math.round(player.getDuration()/60%60)+":"+cu_show2
+    }
+    if(player.getDuration()/60/60>=1){
+        v_long = 3
+        cu_show2 =  Math.round(player.getDuration()/60/60)+":"+cu_show2
+    }
+
+    player.playVideo()
 }
+
+var cu_show;
+
 
 
 function updatePlayer() {
@@ -228,13 +251,46 @@ function updatePlayer() {
         }
 
     }
+    var Currentprocess = document.getElementById("process");
+    cu_show = ""
+    if(v_long == 3) {
+        cu_show += Math.round(player.getCurrentTime() / 60 / 60) + ":"
+    }
+    if(v_long >= 2) {
+        if (Math.round(player.getCurrentTime() / 60 % 60) < 10)
+            cu_show += "0"
+        cu_show += Math.round(player.getCurrentTime() / 60 % 60) + ":"
+    }
+    if(Math.round(player.getCurrentTime()%60)<10)
+        cu_show+="0"
+    cu_show += Math.round(player.getCurrentTime()%60)
+    Currentprocess.innerHTML=cu_show + " / " + cu_show2
     if(isFull) {
         if (window.innerHeight != screen.height) {
             isFull = false
             player.setSize(640, 360)
+            customControl.style.width = "630px"
             cont.style.width = "640px"
-            cont.style.height = "405px"
+            cont.style.height = "415px"
         }
+    }
+    else{
+        if (window.innerHeight == screen.height) {
+            isFull = true
+            player.setSize(screen.width, screen.height-55)
+            cont.style.width = screen.width+"px"
+            cont.style.height = screen.height+"px"
+            customControl.style.width = screen.width-10+"px"
+        }
+    }
+
+
+}
+function onCaption() {
+    console.log(player.getOptions())
+    if(player.getOptions().indexOf("captions") != -1){
+        console.log(player.getOptions('captions'))
+        document.getElementById("cap").style.visibility = "visible"
     }
 
 }

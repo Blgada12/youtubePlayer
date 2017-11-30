@@ -5,48 +5,13 @@
     <meta charset="utf-8">
     <script src="script.js">
     </script>
-    <style>
-        #container{
-            width: 640px;
-            position: static;
-        }
-        #customControl{
-            width: 630px;
-            padding-left: 5px;
-            padding-right: 5px;
-            height: 40px;
-        }
-        .smallBTN{
-            width: 20px;
-            height: 20px;
-        }
-        #seeksliderprog{
-            width: 100%;
-        }
-        #seekslider{
-            width: 100px;
-            margin-top: 0px;
-            margin-bottom: 0px;
-        }
-        #leftCON{
-            position: relative;
-            float: left;
-        }
-        #rightCON{
-            position: relative;
-            float: right;
-        }
-        #qualbox{
-            width: 65px;
-        }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
 
 </head>
 
 <body>
     <script>
-        youtubeId = 'OLuPCVi-iJ4'
+        youtubeId = 'cgACz0ys1h4'
     </script>
     <div id="container">
         <div class="video-container">
@@ -56,23 +21,20 @@
             <input id="seeksliderprog" type="range" min="0" max="100" value="0" step="1">
             <br>
             <div id="leftCON">
-                <img src="./img/skip_1.png" class="smallBTN" id="minus_15" value="-15">
-                <img src="./img/play_now.png" type="button" class="smallBTN" id="play-btn" value="play">
-                <img src="./img/skip.png" class="smallBTN" id="plus_15" value="+15">
+                <img src="./img/skip_1.png" class="smallBTN" id="minus_15">
+                <img src="./img/play_now.png" type="button" class="smallBTN" id="play-btn">
+                <img src="./img/skip.png" class="smallBTN" id="plus_15">
+                <span id="process">00 / 00</span>
             </div>
 
             <div id="rightCON">
-                <img src="./img/Sound_loud.png" class="smallBTN" id="mute" value="음소거">
+                <img src="./img/text_icon.png" id="cap">
+                <img src="./img/Sound_loud.png" class="smallBTN" id="mute">
                 <input id="seekslider" type="range" min="0" max="100" value="0" step="1">
                 <select name="quals" id="qualbox">
                 </select>
-                <img src="./img/bigger.png" class="smallBTN" id="full" value="전화">
+                <img src="./img/bigger.png" class="smallBTN" id="full">
             </div>
-
-
-
-
-
         </div>
     </div>
     <div id="info-buff">
