@@ -1,17 +1,13 @@
 input[type=range]{
-    -webkit-appearance: none;
+    -webkit-appearance: none!important;
 }
 #container{
     width: 640px;
-    height: 415px;
+    height: 471px;
     position: static;
-    background-color: black;
 }
 #customControl{
-    width: 630px;
-    margin-left: 5px;
-    margin-right: 5px;
-    height: 40px;
+    width: 640px;
     position: static;
 }
 .smallBTN{
@@ -22,33 +18,36 @@ input[type=range]{
     margin-left: 0px;
     width: 100%;
     position: static;
-    margin-bottom: 2px;
+    margin-bottom: 15px;
 }
 #seeksliderprog::-webkit-slider-runnable-track {
-    height: 4px;
-    background: #FFFFFF;
+    height: 10px;
+    background: #666666;
     margin-bottom: 4px;
 }
 #seeksliderprog::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: none;
-    height: 16px;
-    width: 8px;
-    background: red;
-    margin-top: -4px;
+    height: 26px;
+    width: 26px;
+    border-radius: 13px;
+    background: #CC0000;
+    margin-top: -8px;
 }
 #seekslider{
     width: 100px;
 }
 
+#contall{
+    width: 100%;
+    height: 75px;
+    background-color: #666666;
+}
+
 #leftCON{
-    margin-top: 4px;
-    height: 20px;
     float: left;
 }
 #rightCON{
-    margin-top: 4px;
-    height: 20px;
     float: right;
 }
 #qualbox{

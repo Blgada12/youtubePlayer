@@ -191,16 +191,16 @@ function onPlayerReady(event) {
         if(isFull) {
             exitFS()
             player.setSize(640, 360)
-            customControl.style.width = "630px"
+            customControl.style.width = "640px"
             cont.style.width = "640px"
-            cont.style.height = "415px"
+            cont.style.height = "471px"
         }
         else{
             fullScreen()
-            player.setSize(screen.width, screen.height-55)
+            player.setSize(screen.width, screen.height-106)
             cont.style.width = screen.width+"px"
             cont.style.height = screen.height+"px"
-            customControl.style.width = screen.width-10+"px"
+            customControl.style.width = screen.width+"px"
         }
     });
     setInterval(updatePlayer, 100)
@@ -269,18 +269,18 @@ function updatePlayer() {
         if (window.innerHeight != screen.height) {
             isFull = false
             player.setSize(640, 360)
-            customControl.style.width = "630px"
+            customControl.style.width = "640px"
             cont.style.width = "640px"
-            cont.style.height = "415px"
+            cont.style.height = "471px"
         }
     }
     else{
         if (window.innerHeight == screen.height) {
             isFull = true
-            player.setSize(screen.width, screen.height-55)
+            player.setSize(screen.width, screen.height-106)
             cont.style.width = screen.width+"px"
             cont.style.height = screen.height+"px"
-            customControl.style.width = screen.width-10+"px"
+            customControl.style.width = screen.width+"px"
         }
     }
 
